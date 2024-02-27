@@ -15,6 +15,8 @@ const icon = new Icon({
 const Map = () => {
   const [sensors, setSensors] = useState(sensorsData);
 
+  console.log(sensors);
+
   return (
     <div className='map-wrapper'>
       <MapContainer center={[48.8566, 2.3522]} zoom={13} className='map'>
