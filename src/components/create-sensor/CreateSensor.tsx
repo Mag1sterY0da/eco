@@ -12,6 +12,8 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { API_URL } from '../../utils/const/apiUrl.ts';
 
 const style = {
     position: 'absolute',
@@ -26,6 +28,14 @@ const style = {
 };
 
 const CreateSensor = () => {
+    const [indicators, setIndicators] = useState([]);
+
+    useEffect(() => {
+        axios.get(`${API_URL}/indicators`).then(res => {
+            setIndicators(res.data);
+        });
+    }, []);
+
     const formik = useFormik({
         initialValues: {
             name: '',
@@ -64,15 +74,16 @@ const CreateSensor = () => {
                                     label="Показники"
                                     multiple
                             >
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
-                                <ListSubheader>Category 1</ListSubheader>
-                                <MenuItem value={1}>Option 1</MenuItem>
-                                <MenuItem value={2}>Option 2</MenuItem>
-                                <ListSubheader>Category 2</ListSubheader>
-                                <MenuItem value={3}>Option 3</MenuItem>
-                                <MenuItem value={4}>Option 4</MenuItem>
+                                {Object.entries(indicators).map((entry) => {
+                                    const [group, items] = entry;
+                                    return [
+                                        <ListSubheader key={`header-${group}`}>{group}</ListSubheader>,
+                                        ...items.map(el => (
+                                            <MenuItem key={el.id} value={el.id}>{el.name}</MenuItem>
+                                        ))
+                                    ];
+                                })}
+
                             </Select>
                         </FormControl>
                         <Button color="primary" variant="contained" fullWidth type="submit">

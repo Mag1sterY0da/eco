@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Link } from 'react-router-dom';
 import './Map.scss';
+import CreateSensor from 'components/create-sensor/CreateSensor.tsx';
 
 const icon = new Icon({
   iconUrl: '/marker.png',
@@ -31,6 +32,7 @@ const Map = () => {
           </Marker>
         ))}
       </MapContainer>
+      <CreateSensor />
     </div>
   );
 };
