@@ -1,8 +1,7 @@
 export interface Location {
-  sensorId: number;
-  region: string | null;
-  city: string | null;
-  address: string | null;
+  region: string;
+  city: string;
+  address: string;
   longitude: string;
   latitude: string;
 }

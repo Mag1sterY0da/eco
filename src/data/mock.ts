@@ -5,7 +5,6 @@ export const sensors: Sensor[] = [
     id: 0,
     name: 'Sensor 1',
     location: {
-      sensorId: 0,
       region: 'Paris',
       city: 'Paris',
       address: '10 Avenue Gambetta, 75020 Paris',
@@ -17,7 +16,6 @@ export const sensors: Sensor[] = [
     id: 1,
     name: 'Sensor 2',
     location: {
-      sensorId: 1,
       region: 'Paris',
       city: 'Paris',
       address: '10 Avenue Gambetta, 75020 Paris',
@@ -29,7 +27,6 @@ export const sensors: Sensor[] = [
     id: 2,
     name: 'Sensor 3',
     location: {
-      sensorId: 2,
       region: 'Paris',
       city: 'Paris',
       address: '10 Avenue Gambetta, 75020 Paris',
