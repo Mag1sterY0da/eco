@@ -65,13 +65,13 @@ const mockedIndicators = {
 }
 
 const CreateSensor = ({ onSubmit }) => {
-    const [indicators, setIndicators] = useState(mockedIndicators);
+    const [indicators, setIndicators] = useState({});
 
-    // useEffect(() => {
-    //     axios.get(`${API_URL}/indicators`).then(res => {
-    //         setIndicators(res.data);
-    //     });
-    // }, []);
+    useEffect(() => {
+        axios.get(`${API_URL}/indicators`).then(res => {
+            setIndicators(res.data);
+        });
+    }, []);
 
     const formik = useFormik({
         initialValues: {
