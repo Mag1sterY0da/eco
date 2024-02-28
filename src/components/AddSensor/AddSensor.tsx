@@ -30,13 +30,15 @@ const AddSensorOnClick = ({ locations, setLocations }: AddSensorProps) => {
                     geoData.address?.county ||
                     'Unknown',
                 city: geoData.address.city || geoData.address.town || 'Unknown',
-                address: `${geoData.address?.road}, ${geoData.address?.house_number}`,
+                address: `${geoData.address?.road}, ${geoData.address?.house_number ? geoData.address?.house_number : ''}`,
                 longitude: e.latlng.lng.toString(),
                 latitude: e.latlng.lat.toString()
             }
 
             axios.post(`${API_URL}/locations`, location).then(res => {
-                setLocations([...locations, location]);
+                axios.get(`${API_URL}/locations`).then(res => {
+                    setLocations(res.data);
+                });
             })
         }
     });
