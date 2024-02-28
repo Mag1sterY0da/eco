@@ -1,46 +1,44 @@
 import { reverseGeocode } from 'api/reverseGeocode';
 import { useMapEvents } from 'react-leaflet';
-import { Sensor } from 'types/Sensor';
+import CreateSensor from 'components/create-sensor/CreateSensor.tsx';
+import { useState } from 'react';
 
-type AddSensorProps = {
-  sensors: Sensor[];
-  setSensors: React.Dispatch<React.SetStateAction<Sensor[]>>;
-};
+const AddSensorOnClick = () => {
+    const [showCreateSensor, setShowCreateSensor] = useState(false);
+    const [location, setLocation] = useState({});
 
-const AddSensorOnClick = ({ sensors, setSensors }: AddSensorProps) => {
-  useMapEvents({
-    click: async e => {
-      const lng = e.latlng.lng;
-      const lat = e.latlng.lat;
-      const geoData = await reverseGeocode(lat, lng);
+    useMapEvents({
+        click: async e => {
+            setShowCreateSensor(true);
+            const lng = e.latlng.lng;
+            const lat = e.latlng.lat;
+            const geoData = await reverseGeocode(lat, lng);
 
-      console.log(geoData);
+            setLocation({
+                location: {
+                    region:
+                        geoData.address?.region ||
+                        geoData.address?.district ||
+                        geoData.address?.state ||
+                        geoData.address?.borough ||
+                        geoData.address?.quarter ||
+                        geoData.address?.county ||
+                        'Unknown',
+                    city: geoData.address.city || geoData.address.town || 'Unknown',
+                    address: `${geoData.address?.road}, ${geoData.address?.house_number}`,
+                    longitude: e.latlng.lng.toString(),
+                    latitude: e.latlng.lat.toString()
+                }
+            });
+        }
+    });
 
-      const newSensor = {
-        id: sensors.length + 1,
-        name: `Sensor ${sensors.length + 1}`,
-        location: {
-          id: sensors.length + 1,
-          region:
-            geoData.address?.region ||
-            geoData.address?.district ||
-            geoData.address?.state ||
-            geoData.address?.borough ||
-            geoData.address?.quarter ||
-            geoData.address?.county ||
-            'Unknown',
-          city: geoData.address.city || geoData.address.town || 'Unknown',
-          address: `${geoData.address?.road}, ${geoData.address?.house_number}`,
-          longitude: e.latlng.lng.toString(),
-          latitude: e.latlng.lat.toString()
-        },
-        indicators: []
-      };
-      setSensors(currentSensors => [...currentSensors, newSensor]);
-    }
-  });
+    const onSubmit = (data) => {
+        const newSensor = {...location, ...data};
+        console.log(newSensor);
+    };
 
-  return null;
+    return showCreateSensor ? <CreateSensor onSubmit={onSubmit}/> : null;
 };
 
 export default AddSensorOnClick;

@@ -27,14 +27,51 @@ const style = {
     p: 4,
 };
 
-const CreateSensor = () => {
-    const [indicators, setIndicators] = useState([]);
+const mockedIndicators = {
+    "Стан водних ресурсів": [
+        {
+            "id": 2,
+            "name": "Test Indicator 2",
+            "type": "Стан водних ресурсів",
+            "unit": "Test unit 2",
+            "data": null
+        },
+        {
+            "id": 3,
+            "name": "Test Indicator 3",
+            "type": "Стан водних ресурсів",
+            "unit": "Test unit 3",
+            "data": null
+        }
+    ],
+    "Стан повітря": [
+        {
+            "id": 1,
+            "name": "Test Indicator 1",
+            "type": "Стан повітря",
+            "unit": "Test unit",
+            "data": null
+        }
+    ],
+    "Стан радіації": [
+        {
+            "id": 4,
+            "name": "Test Indicator 4",
+            "type": "Стан радіації",
+            "unit": "Test unit 4",
+            "data": null
+        }
+    ]
+}
 
-    useEffect(() => {
-        axios.get(`${API_URL}/indicators`).then(res => {
-            setIndicators(res.data);
-        });
-    }, []);
+const CreateSensor = ({ onSubmit }) => {
+    const [indicators, setIndicators] = useState(mockedIndicators);
+
+    // useEffect(() => {
+    //     axios.get(`${API_URL}/indicators`).then(res => {
+    //         setIndicators(res.data);
+    //     });
+    // }, []);
 
     const formik = useFormik({
         initialValues: {
@@ -42,8 +79,7 @@ const CreateSensor = () => {
             indicators: [],
         },
         onSubmit: (values) => {
-            console.log(values);
-            // axios.post('', values).then(console.log);
+            onSubmit(values);
         },
     });
     return (

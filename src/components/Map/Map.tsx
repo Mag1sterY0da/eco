@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Link } from 'react-router-dom';
 import './Map.scss';
-import CreateSensor from 'components/create-sensor/CreateSensor.tsx';
 
 const icon = new Icon({
   iconUrl: '/marker.png',
@@ -25,7 +24,7 @@ const Map = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
         />
-        <AddSensorOnClick sensors={sensors} setSensors={setSensors} />
+        <AddSensorOnClick />
         {sensors.map((m, i) => (
           <Marker position={[+m.location.latitude, +m.location.longitude]} icon={icon} key={i}>
             <Popup>
@@ -34,7 +33,6 @@ const Map = () => {
           </Marker>
         ))}
       </MapContainer>
-      <CreateSensor />
     </div>
   );
 };
