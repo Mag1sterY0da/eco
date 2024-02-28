@@ -1,3 +1,5 @@
+import { Sensor } from './Sensor';
+
 export interface Location {
   id: number;
   region: string;
@@ -5,4 +7,5 @@ export interface Location {
   address: string;
   longitude: string;
   latitude: string;
+  sensors: Sensor[];
 }

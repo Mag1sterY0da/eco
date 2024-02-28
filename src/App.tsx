@@ -1,5 +1,5 @@
+import Location from 'components/Location';
 import Map from 'components/Map';
-import Sensor from 'components/Sensor';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 const App = () => {
@@ -7,7 +7,7 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Map />} />
-        <Route path='/sensor/:id' element={<Sensor />} />
+        <Route path='/location/:id' element={<Location />} />
       </Routes>
     </BrowserRouter>
   );

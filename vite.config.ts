@@ -8,7 +8,8 @@ export default defineConfig({
       components: '/src/components',
       api: '/src/api',
       types: '/src/types',
-      data: '/src/data'
+      data: '/src/data',
+      utils: '/src/utils'
     }
   }
 });
