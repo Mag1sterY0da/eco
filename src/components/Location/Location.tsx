@@ -3,7 +3,7 @@ import {
   Button,
   Container,
   FormControl,
-  InputLabel,
+  InputLabel, ListSubheader,
   MenuItem,
   Modal,
   Select,
@@ -37,6 +37,15 @@ const style = {
 };
 
 const Location = () => {
+  const [allIndicators, setAllIndicators] = useState([]);
+
+  const [anotherIndicators, setAnotherIndicators] = useState([]);
+
+  useEffect(() => {
+    axios.get(`${API_URL}/indicators`).then(res => {
+      setAllIndicators(res.data);
+    });
+  }, []);
   const { id } = useParams();
   const locationAddressRef = useRef(null);
   const sensorNameRef = useRef(null);
@@ -50,6 +59,20 @@ const Location = () => {
     setChosenSensor(id);
   };
   const handleClose = () => setOpen(false);
+
+  const [openAddIndicator, setOpenAddIndicator] = useState(false);
+  const handleOpenAddIndicator = sensor => {
+    setOpenAddIndicator(true);
+    const anotherIndicators = JSON.parse(JSON.stringify(allIndicators));
+    for (const key of Object.keys(anotherIndicators)) {
+      sensor.indicators.forEach(indicator => {
+        anotherIndicators[key] = anotherIndicators[key].filter(el => el.id !== indicator.id);
+      })
+    }
+    setChosenSensor(sensor.id);
+    setAnotherIndicators(anotherIndicators);
+  };
+  const handleCloseAddIndicator = () => setOpenAddIndicator(false);
 
   const [chosenSensor, setChosenSensor] = useState(0);
 
@@ -133,7 +156,24 @@ const Location = () => {
     });
   }, [id]);
 
-  console.log(location);
+
+  const formik2 = useFormik({
+    initialValues: {
+      indicators: []
+    },
+    onSubmit: values => {
+      const data = {
+        indicators: values.indicators,
+      };
+      console.log(data);
+      axios.put(`${API_URL}/sensors/${chosenSensor}/indicators`, data).then(res => {
+        axios.get(`${API_URL}/locations/${id}`).then(res => {
+          setLocation(res.data);
+          setOpen(false);
+        });
+      });
+    }
+  });
 
   return (
     <>
@@ -166,7 +206,10 @@ const Location = () => {
             return (
               <Box key={sensor.id} sx={{ my: 3 }}>
                 <Stack direction='row' spacing={2} style={{ fontSize: '1.5rem' }}>
-                  <b>Датчик - {sensor.name}</b> 
+                  <b>Датчик - {sensor.name}</b>
+                  <Button variant='outlined' onClick={() => handleOpenAddIndicator(sensor)}>
+                    Додати показники
+                  </Button>
                   <Button variant='outlined' onClick={() => handleOpen(sensor.id)}>
                     Додати значення показників
                   </Button>
@@ -246,6 +289,48 @@ const Location = () => {
                   <DateTimePicker label='Controlled picker' value={value} onChange={newValue => setValue(newValue)} />
                 </DemoContainer>
               </LocalizationProvider>
+              <Button color='primary' variant='contained' fullWidth type='submit'>
+                Додати
+              </Button>
+            </Stack>
+          </form>
+        </Box>
+      </Modal>
+      <Modal
+          open={openAddIndicator}
+          onClose={handleCloseAddIndicator}
+          aria-labelledby='modal-modal-title'
+          aria-describedby='modal-modal-description'
+      >
+        <Box sx={style}>
+          <form onSubmit={formik2.handleSubmit}>
+            <Stack spacing={3}>
+              <Typography id='modal-modal-title' variant='h6' component='h2'>
+                Додавання показника до датчика
+              </Typography>
+              <FormControl>
+                <InputLabel htmlFor='grouped-select'>Показники</InputLabel>
+                <Select
+                    name='indicators'
+                    value={formik2.values.indicators}
+                    onChange={formik2.handleChange}
+                    id='grouped-select'
+                    label='Показники'
+                    multiple
+                >
+                  {Object.entries(anotherIndicators).map(entry => {
+                    const [group, items] = entry;
+                    return [
+                      <ListSubheader key={`header-${group}`}>{group}</ListSubheader>,
+                      ...items.map(el => (
+                          <MenuItem key={el.id} value={el.id}>
+                            {el.name}
+                          </MenuItem>
+                      ))
+                    ];
+                  })}
+                </Select>
+              </FormControl>
               <Button color='primary' variant='contained' fullWidth type='submit'>
                 Додати
               </Button>
