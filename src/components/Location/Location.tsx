@@ -20,7 +20,7 @@ import CreateSensor from 'components/create-sensor/CreateSensor.tsx';
 import dayjs, { Dayjs } from 'dayjs';
 import { useFormik } from 'formik';
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Location } from 'types/Location';
 import { API_URL } from 'utils/const/apiUrl';
 
@@ -177,7 +177,7 @@ const Location = () => {
 
     return (
         <>
-            <Container sx={{my: 5}}>
+            <Container maxWidth={'xl'} sx={{my: 5}}>
                 <Typography variant="h2">Локація</Typography>
                 <Typography variant="h5" gutterBottom sx={{mb: 3}}>
                     {location?.region}, {location?.city}, {location?.address}
@@ -219,6 +219,10 @@ const Location = () => {
                                     </Button>
                                     <Button variant="outlined" color="error" onClick={() => deleteSensor(sensor.id)}>
                                         Видалити датчик
+                                    </Button>
+                                    <Button variant="contained">
+                                        <Link to={`/sensor/${sensor.id}`}>
+                                            Сторінка датчика</Link>
                                     </Button>
                                 </Stack>
                                 <Box sx={{ms: 3}}>
