@@ -13,14 +13,14 @@ import {
   TableHead,
   TableRow,
   Typography
-} from '@mui/material';
-import axios from 'axios';
-import { ArcElement, BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from 'chart.js';
-import SensorData from 'components/SensorData';
-import { useEffect, useState } from 'react';
-import { Bar, Pie } from 'react-chartjs-2';
-import { useParams } from 'react-router-dom';
-import { API_URL } from 'utils/const/apiUrl.ts';
+} from '@mui/material'
+import axios from 'axios'
+import { ArcElement, BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from 'chart.js'
+import SensorData from 'components/SensorData'
+import { useEffect, useState } from 'react'
+import { Bar, Pie } from 'react-chartjs-2'
+import { useParams } from 'react-router-dom'
+import { API_URL } from 'utils/const/apiUrl.ts'
 
 const EnergyUsageTable = ({ year, data }) => {
   return (
@@ -51,8 +51,8 @@ const EnergyUsageTable = ({ year, data }) => {
         </Table>
       </TableContainer>
     </>
-  );
-};
+  )
+}
 
 const MinMaxtable = ({ title, data }) => {
   return (
@@ -81,93 +81,93 @@ const MinMaxtable = ({ title, data }) => {
         </Table>
       </TableContainer>
     </>
-  );
-};
+  )
+}
 
-ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
-const timeLabels = Array.from({ length: 24 }, (_, i) => ('0' + i).slice(-2));
+const timeLabels = Array.from({ length: 24 }, (_, i) => ('0' + i).slice(-2))
 
 export const SensorPage = () => {
-  const { id } = useParams();
+  const { id } = useParams()
 
-  const [tableData, setTableData] = useState([]);
-  const [category, setCategory] = useState('');
-  const [allIndicators, setAllIndicators] = useState([]);
-  const [avgData, setAvgData] = useState([]);
-  const [maxData, setMaxData] = useState([]);
-  const [lineChartData, setLineChartData] = useState([]);
-  const [integralData, setIntegralData] = useState([]);
-  const [integatorCons, setIntegatorCons] = useState([]);
-  const [integralIndicatorData, setIntegralIndicatorData] = useState({});
+  const [tableData, setTableData] = useState([])
+  const [category, setCategory] = useState('')
+  const [allIndicators, setAllIndicators] = useState([])
+  const [avgData, setAvgData] = useState([])
+  const [maxData, setMaxData] = useState([])
+  const [lineChartData, setLineChartData] = useState([])
+  const [integralData, setIntegralData] = useState([])
+  const [integatorCons, setIntegatorCons] = useState([])
+  const [integralIndicatorData, setIntegralIndicatorData] = useState({})
 
   useEffect(() => {
     axios.get(`${API_URL}/indicators`).then(res => {
-      setAllIndicators(res.data);
-    });
+      setAllIndicators(res.data)
+    })
     axios.get(`${API_URL}/integral-indicator/${id}`).then(result => {
-      setIntegralData(result.data);
-    });
+      setIntegralData(result.data)
+    })
     axios.get(`${API_URL}/indicators/cons`).then(result => {
-      setIntegatorCons(result.data);
-    });
-  }, [id]);
+      setIntegatorCons(result.data)
+    })
+  }, [id])
 
   useEffect(() => {
     // Make sure integatorCons is not empty
     if (integatorCons.length > 0) {
       // Create a temporary object to store the data
-      const newData = { ...integralIndicatorData };
+      const newData = { ...integralIndicatorData }
 
       // Use a promise-based approach to handle multiple requests
       const requests = integatorCons.map(indicator =>
         axios.get(`${API_URL}/integral-indicator/consumption?sensorId=${id}&indicatorId=${indicator.id}`)
-      );
+      )
 
       // Wait for all requests to complete
       Promise.all(requests).then(results => {
         results.forEach((result, index) => {
           // Use the indicator id as key to store the data
-          newData[integatorCons[index].name] = result.data;
-        });
+          newData[integatorCons[index].name] = result.data
+        })
 
         // Update the integralIndicatorData state with the new data
-        setIntegralIndicatorData(newData);
-      });
+        setIntegralIndicatorData(newData)
+      })
     }
-  }, [integatorCons, id]);
+  }, [integatorCons, id])
 
   const handleCategoryChange = e => {
-    const selected = e.target.value;
-    setCategory(selected);
+    const selected = e.target.value
+    setCategory(selected)
     axios.get(`${API_URL}/data/table?sensorId=${id}&category=${selected}`).then(res => {
-      setTableData(res.data);
-    });
+      setTableData(res.data)
+    })
     axios.get(`${API_URL}/data/histogram?sensorId=${id}&category=${selected}`).then(res => {
-      setAvgData(res.data.avg);
-      setMaxData(res.data.max);
-    });
+      setAvgData(res.data.avg)
+      setMaxData(res.data.max)
+    })
     axios.get(`${API_URL}/data/day?sensorId=${id}&category=${selected}`).then(result => {
-      setLineChartData(result.data);
-    });
-  };
+      setLineChartData(result.data)
+    })
+  }
 
-  console.log(integralIndicatorData);
+  console.log(integralIndicatorData)
 
   const randomColor = num => {
-    const res = [];
+    const res = []
     for (let i = 0; i < num; i++) {
-      const r = Math.floor(Math.random() * 256); // Random value between 0 and 255 for red
-      const g = Math.floor(Math.random() * 256); // Random value between 0 and 255 for green
-      const b = Math.floor(Math.random() * 256); // Random value between 0 and 255 for blue
-      res.push('rgb(' + r + ', ' + g + ', ' + b + ')');
+      const r = Math.floor(Math.random() * 256) // Random value between 0 and 255 for red
+      const g = Math.floor(Math.random() * 256) // Random value between 0 and 255 for green
+      const b = Math.floor(Math.random() * 256) // Random value between 0 and 255 for blue
+      res.push('rgb(' + r + ', ' + g + ', ' + b + ')')
     }
-    return res;
-  };
+    return res
+  }
 
   return (
     <Container maxWidth={'xl'} sx={{ my: 5 }}>
-      <Stack direction='row' spacing={3}>
+      <Stack direction='row' gap={2} flexWrap='wrap'>
         {integralData?.map((el, i) => (
           <SensorData key={i} data={el} />
         ))}
@@ -278,7 +278,7 @@ export const SensorPage = () => {
         // Check if there is data for any year, if not, don't render this indicator
         const hasData = Object.values(yearsData).some(
           yearData => yearData.data && Object.keys(yearData.data).length > 0
-        );
+        )
 
         return hasData ? (
           <div key={indicatorName}>
@@ -299,7 +299,7 @@ export const SensorPage = () => {
               </>
             ))}
           </div>
-        ) : null; // Return null if there is no data
+        ) : null // Return null if there is no data
       })}
 
       {lineChartData.length ? (
@@ -348,5 +348,5 @@ export const SensorPage = () => {
         </Stack>
       ) : null}
     </Container>
-  );
-};
+  )
+}

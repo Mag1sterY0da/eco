@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material'
 
 enum PollutionLevel {
   Небезпечний = '#f44336',
@@ -8,11 +8,11 @@ enum PollutionLevel {
 }
 
 const getColorForLevel = (level: string): string => {
-  return PollutionLevel[level as keyof typeof PollutionLevel] || '#000000';
-};
+  return PollutionLevel[level as keyof typeof PollutionLevel] || '#000000'
+}
 
 const SensorData = ({ data }) => {
-  if (data.value === -1) return null;
+  if (data.value === -1) return null
 
   return (
     <Stack direction='row' spacing={3}>
@@ -28,7 +28,7 @@ const SensorData = ({ data }) => {
         }}
       >
         <Stack direction='column' sx={{ color: 'white', textAlign: 'center' }}>
-          <Typography variant='h5'>{Math.trunc(data.value)}</Typography>
+          <Typography variant='h6'>{data.value.toFixed(2)}</Typography>
           <Typography variant='body2'>{data.unit}</Typography>
         </Stack>
       </Box>
@@ -40,7 +40,7 @@ const SensorData = ({ data }) => {
         <Typography variant='body2'>{data.name}</Typography>
       </Stack>
     </Stack>
-  );
-};
+  )
+}
 
-export default SensorData;
+export default SensorData

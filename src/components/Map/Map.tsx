@@ -1,38 +1,38 @@
-import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import axios from 'axios';
-import AddSensorOnClick from 'components/AddSensor';
-import { Icon } from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import { useEffect, useState } from 'react';
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
-import { Link } from 'react-router-dom';
-import { Location } from 'types/Location.ts';
-import { API_URL } from '../../utils/const/apiUrl.ts';
-import './Map.scss';
+import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
+import axios from 'axios'
+import AddSensorOnClick from 'components/AddSensor'
+import { Icon } from 'leaflet'
+import 'leaflet/dist/leaflet.css'
+import { useEffect, useState } from 'react'
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
+import { Link } from 'react-router-dom'
+import { Location } from 'types/Location.ts'
+import { API_URL } from '../../utils/const/apiUrl.ts'
+import './Map.scss'
 
 const icon = new Icon({
   iconUrl: '/marker.png',
   iconSize: [38, 38]
-});
+})
 
 const Map = () => {
-  const [locations, setLocations] = useState<Location[]>([]);
-  const [allIndicators, setAllIndicators] = useState([]);
-  const [category, setCategory] = useState('');
-  const [indicator, setIndicator] = useState(1);
+  const [locations, setLocations] = useState<Location[]>([])
+  const [allIndicators, setAllIndicators] = useState([])
+  const [category, setCategory] = useState('')
+  const [indicator, setIndicator] = useState(1)
 
   useEffect(() => {
     axios.get(`${API_URL}/locations`).then(res => {
-      setLocations(res.data);
-    });
+      setLocations(res.data)
+    })
     axios.get(`${API_URL}/indicators`).then(res => {
-      setAllIndicators(res.data);
-    });
-  }, []);
+      setAllIndicators(res.data)
+    })
+  }, [])
 
   const handleCategoryChange = e => {
-    const selected = e.target.value;
-    setCategory(selected);
+    const selected = e.target.value
+    setCategory(selected)
     axios
       .get(`${API_URL}/locations`, {
         params: {
@@ -40,13 +40,13 @@ const Map = () => {
         }
       })
       .then(res => {
-        setLocations(res.data);
-      });
-  };
+        setLocations(res.data)
+      })
+  }
 
   const handleIndicatorChange = e => {
-    const selected = e.target.value;
-    setIndicator(selected);
+    const selected = e.target.value
+    setIndicator(selected)
     axios
       .get(`${API_URL}/locations`, {
         params: {
@@ -54,9 +54,9 @@ const Map = () => {
         }
       })
       .then(res => {
-        setLocations(res.data);
-      });
-  };
+        setLocations(res.data)
+      })
+  }
 
   return (
     <div className='map-wrapper'>
@@ -67,7 +67,7 @@ const Map = () => {
           right: 0,
           zIndex: 1000,
           width: '300px',
-          height: '250px',
+          height: '300px',
           backgroundColor: 'white',
           padding: '10px',
           borderRadius: '5px'
@@ -104,6 +104,11 @@ const Map = () => {
               Оцінка економічних показників
             </Button>
           </Link>
+          <Link to={`/waste-units`}>
+            <Button variant='contained' sx={{ mt: 3, width: '100%' }} onClick={() => console.log(locations)}>
+              Відходи
+            </Button>
+          </Link>
         </FormControl>
       </div>
       <MapContainer center={[50.4504, 30.5245]} zoom={13} className='map'>
@@ -121,7 +126,7 @@ const Map = () => {
         ))}
       </MapContainer>
     </div>
-  );
-};
+  )
+}
 
-export default Map;
+export default Map
