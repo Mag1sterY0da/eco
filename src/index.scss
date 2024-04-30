@@ -7,3 +7,14 @@
 #root {
   height: 100vh;
 }
+
+th, td {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+tr {
+  &:hover {
+    background-color: #eee;
+  }
+}

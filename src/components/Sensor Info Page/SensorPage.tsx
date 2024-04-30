@@ -1,4 +1,5 @@
 import {
+  Button,
   Container,
   FormControl,
   InputLabel,
@@ -13,13 +14,13 @@ import {
   TableHead,
   TableRow,
   Typography
-} from '@mui/material'
+} from '@mui/material';
 import axios from 'axios'
 import { ArcElement, BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from 'chart.js'
 import SensorData from 'components/SensorData'
 import { useEffect, useState } from 'react'
 import { Bar, Pie } from 'react-chartjs-2'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom';
 import { API_URL } from 'utils/const/apiUrl.ts'
 
 const EnergyUsageTable = ({ year, data }) => {
@@ -167,6 +168,7 @@ export const SensorPage = () => {
 
   return (
     <Container maxWidth={'xl'} sx={{ my: 5 }}>
+      <Button color='primary' variant='contained' sx={{mb: 3}}><Link to={`/activity/${id}`}>Заходи</Link></Button>
       <Stack direction='row' gap={2} flexWrap='wrap'>
         {integralData?.map((el, i) => (
           <SensorData key={i} data={el} />

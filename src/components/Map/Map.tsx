@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom'
 import { Location } from 'types/Location.ts'
 import { API_URL } from '../../utils/const/apiUrl.ts'
 import './Map.scss'
+import CreateActivityForm from 'components/CreateActivityForm/CreateActivityForm.tsx';
 
 const icon = new Icon({
   iconUrl: '/marker.png',
@@ -67,7 +68,7 @@ const Map = () => {
           right: 0,
           zIndex: 1000,
           width: '300px',
-          height: '300px',
+          height: '370px',
           backgroundColor: 'white',
           padding: '10px',
           borderRadius: '5px'
@@ -109,6 +110,11 @@ const Map = () => {
               Відходи
             </Button>
           </Link>
+            <Link to={`/region-activity`}>
+                <Button variant='contained' sx={{ mt: 3, width: '100%' }} onClick={() => console.log(locations)}>
+                    Заходи по регіонам
+                </Button>
+            </Link>
         </FormControl>
       </div>
       <MapContainer center={[50.4504, 30.5245]} zoom={13} className='map'>
