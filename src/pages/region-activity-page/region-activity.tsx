@@ -11,6 +11,7 @@ export const RegionActivityPage = () => {
   const [cities, setCities] = useState([])
   const [city, setCity] = useState('')
   const [activities, setActivities] = useState([])
+  const [selectedRows, setSelectedRows] = useState({});
 
   const formik = useFormik({
     initialValues: {
@@ -51,23 +52,10 @@ export const RegionActivityPage = () => {
     return years
   }
 
-  const getSum = activities => {
-    const years = getUniqueYears(activities)
-    const datas = []
-    const res = {}
-    Object.values(activities).forEach(act => {
-      act.forEach(el => {
-        el.data.forEach(data => {
-          datas.push(data)
-        })
-      })
-    })
-    datas.forEach(el => {
-      if (res[el.year]) {
-        res[el.year] += el.value
-      } else {
-        res[el.year] = el.value
-      }
+  const getSum = (activities) => {
+    let res = 0
+    Object.values(activities).forEach(arr => {
+      res += arr.reduce((acc, el) => el.value + acc, 0);
     })
     return res
   }
@@ -151,6 +139,30 @@ export const RegionActivityPage = () => {
     saveAs(blob, 'table.docx')
   }
 
+  const handleChange = (key, row, e) => {
+    if (e.target.checked) {
+      if (selectedRows[key]) {
+        const tmp = {...selectedRows};
+        tmp[key].push(row);
+        console.log('+', tmp);
+        setSelectedRows(tmp);
+      } else {
+        const tmp = {...selectedRows};
+        tmp[key] = [row];
+        console.log(tmp);
+        setSelectedRows(tmp);
+      }
+    } else {
+      const tmp = {...selectedRows};
+      tmp[key] = tmp[key].filter((el => el.name !== row.name));
+      if (!tmp[key].length) {
+        delete tmp[key];
+      }
+      console.log(tmp);
+      setSelectedRows(tmp);
+    }
+  }
+
   return (
     <Container sx={{ py: 3 }}>
       <DownloadTableExcel filename='users table' sheet='users' currentTableRef={tableRef.current}>
@@ -177,69 +189,45 @@ export const RegionActivityPage = () => {
             <h2>{sensor}</h2>
             <table border={1} cellSpacing={0} ref={tableRef}>
               <tbody>
-                <tr>
-                  <th>Оперативні цілі, завдання та заходи Стратегії</th>
-                  <th>Нормативний документ</th>
-                  <th colSpan={3}>Обсяги фінансування, тис.грн</th>
-                </tr>
-                {Object.keys(activities[sensor]).map((el, idx) => {
-                  return (
+              <tr>
+                <th></th>
+                <th>Оперативні цілі, завдання та заходи Стратегії</th>
+                <th>Нормативний документ</th>
+                <th>Обсяги фінансування, тис.грн</th>
+              </tr>
+              {Object.keys(activities[sensor]).map((el, idx) => {
+                return (
                     <>
                       <tr key={idx}>
-                        <td colSpan={5} align={'center'}>
+                        <td colSpan={4} align={'center'}>
                           <b>{el}</b>
                         </td>
                       </tr>
-                      {activities[sensor][el].map((act, index) => {
+                      {(activities[sensor][el]).map((act, index) => {
                         return (
-                          <>
-                            <tr key={index}>
-                              <td rowSpan={2}>{act.name}</td>
-                              <td rowSpan={2}>{act.document}</td>
-                              {act.data.map(({ year }) => {
-                                return (
-                                  <td>
-                                    <i>{year} рік</i>
-                                  </td>
-                                )
-                              })}
-                            </tr>
-                            <tr>
-                              {act.data.map(({ value }) => {
-                                return (
-                                  <td>
-                                    <u>{value}</u>
-                                  </td>
-                                )
-                              })}
-                            </tr>
-                          </>
+                            <>
+                              <tr key={index}>
+                                <td>
+                                  <input type="checkbox" onChange={(e) => handleChange(el, act, e)}/>
+                                </td>
+                                <td>{act.name}</td>
+                                <td>{act.document}</td>
+                                <td><u>{act.value}</u></td>
+                              </tr>
+                            </>
                         )
                       })}
                     </>
-                  )
-                })}
-                <tr>
-                  <td rowSpan={2} colSpan={2} align={'right'}>
-                    Всього
-                  </td>
-                  {getUniqueYears(activities[sensor]).map(year => {
-                    return (
-                      <td>
-                        <i>{year} рік</i>
-                      </td>
-                    )
-                  })}
-                </tr>
-                <tr>
-                  {Object.values(getSum(activities[sensor])).map(val => {
-                    return (
-                      <td>
-                        <u>{val}</u>
-                      </td>
-                    )
-                  })}
-                </tr>
+                )
+              })}
+              <tr>
+                <td colSpan={3} align={'right'}>
+                  Всього
+                </td>
+                <td>
+                  <u>{getSum(activities[sensor])}</u>
+                </td>
+              </tr>
               </tbody>
             </table>
           </>
