@@ -11,7 +11,7 @@ export const RegionActivityPage = () => {
   const [cities, setCities] = useState([])
   const [city, setCity] = useState('')
   const [activities, setActivities] = useState([])
-  const [selectedRows, setSelectedRows] = useState({});
+  const [selectedRows, setSelectedRows] = useState({})
 
   const formik = useFormik({
     initialValues: {
@@ -52,10 +52,10 @@ export const RegionActivityPage = () => {
     return years
   }
 
-  const getSum = (activities) => {
+  const getSum = activities => {
     let res = 0
     Object.values(activities).forEach(arr => {
-      res += arr.reduce((acc, el) => el.value + acc, 0);
+      res += arr.reduce((acc, el) => el.value + acc, 0)
     })
     return res
   }
@@ -142,24 +142,21 @@ export const RegionActivityPage = () => {
   const handleChange = (key, row, e) => {
     if (e.target.checked) {
       if (selectedRows[key]) {
-        const tmp = {...selectedRows};
-        tmp[key].push(row);
-        console.log('+', tmp);
-        setSelectedRows(tmp);
+        const tmp = { ...selectedRows }
+        tmp[key].push(row)
+        setSelectedRows(tmp)
       } else {
-        const tmp = {...selectedRows};
-        tmp[key] = [row];
-        console.log(tmp);
-        setSelectedRows(tmp);
+        const tmp = { ...selectedRows }
+        tmp[key] = [row]
+        setSelectedRows(tmp)
       }
     } else {
-      const tmp = {...selectedRows};
-      tmp[key] = tmp[key].filter((el => el.name !== row.name));
+      const tmp = { ...selectedRows }
+      tmp[key] = tmp[key].filter(el => el.name !== row.name)
       if (!tmp[key].length) {
-        delete tmp[key];
+        delete tmp[key]
       }
-      console.log(tmp);
-      setSelectedRows(tmp);
+      setSelectedRows(tmp)
     }
   }
 
@@ -187,52 +184,95 @@ export const RegionActivityPage = () => {
         return (
           <>
             <h2>{sensor}</h2>
-            <table border={1} cellSpacing={0} ref={tableRef}>
+            <table border={1} cellSpacing={0}>
               <tbody>
-              <tr>
-                <th></th>
-                <th>Оперативні цілі, завдання та заходи Стратегії</th>
-                <th>Нормативний документ</th>
-                <th>Обсяги фінансування, тис.грн</th>
-              </tr>
-              {Object.keys(activities[sensor]).map((el, idx) => {
-                return (
+                <tr>
+                  <th></th>
+                  <th>Оперативні цілі, завдання та заходи Стратегії</th>
+                  <th>Нормативний документ</th>
+                  <th>Обсяги фінансування, тис.грн</th>
+                </tr>
+                {Object.keys(activities[sensor]).map((el, idx) => {
+                  return (
                     <>
                       <tr key={idx}>
                         <td colSpan={4} align={'center'}>
                           <b>{el}</b>
                         </td>
                       </tr>
-                      {(activities[sensor][el]).map((act, index) => {
+                      {activities[sensor][el].map((act, index) => {
                         return (
-                            <>
-                              <tr key={index}>
-                                <td>
-                                  <input type="checkbox" onChange={(e) => handleChange(el, act, e)}/>
-                                </td>
-                                <td>{act.name}</td>
-                                <td>{act.document}</td>
-                                <td><u>{act.value}</u></td>
-                              </tr>
-                            </>
+                          <>
+                            <tr key={index}>
+                              <td>
+                                <input type='checkbox' onChange={e => handleChange(el, act, e)} />
+                              </td>
+                              <td>{act.name}</td>
+                              <td>{act.document}</td>
+                              <td>
+                                <u>{act.value}</u>
+                              </td>
+                            </tr>
+                          </>
                         )
                       })}
                     </>
-                )
-              })}
-              <tr>
-                <td colSpan={3} align={'right'}>
-                  Всього
-                </td>
-                <td>
-                  <u>{getSum(activities[sensor])}</u>
-                </td>
-              </tr>
+                  )
+                })}
+                <tr>
+                  <td colSpan={3} align={'right'}>
+                    Всього
+                  </td>
+                  <td>
+                    <u>{getSum(activities[sensor])}</u>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </>
         )
       })}
+      <table border={1} cellSpacing={0} ref={tableRef} style={{ display: 'none' }}>
+        <tbody>
+          <tr>
+            <th>Оперативні цілі, завдання та заходи Стратегії</th>
+            <th>Нормативний документ</th>
+            <th>Обсяги фінансування, тис.грн</th>
+          </tr>
+          {Object.keys(selectedRows).map((el, idx) => {
+            return (
+              <>
+                <tr key={idx}>
+                  <td colSpan={3} align={'center'}>
+                    <b>{el}</b>
+                  </td>
+                </tr>
+                {selectedRows[el].map((act, index) => {
+                  return (
+                    <>
+                      <tr key={index}>
+                        <td>{act.name}</td>
+                        <td>{act.document}</td>
+                        <td>
+                          <u>{act.value}</u>
+                        </td>
+                      </tr>
+                    </>
+                  )
+                })}
+              </>
+            )
+          })}
+          <tr>
+            <td colSpan={2} align={'right'}>
+              Всього
+            </td>
+            <td>
+              <u>{getSum(selectedRows)}</u>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </Container>
   )
 }

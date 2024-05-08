@@ -14,7 +14,7 @@ export const ActivityPage = () => {
   const [activities, setActivities] = useState([])
   const [showDeleteBtn, setShowDeleteBtn] = useState(false)
   const [act, setAct] = useState({})
-  const [selectedRows, setSelectedRows] = useState({});
+  const [selectedRows, setSelectedRows] = useState({})
 
   useEffect(() => {
     axios.get(`${API_URL}/activities?sensorId=${id}`).then(res => {
@@ -46,7 +46,7 @@ export const ActivityPage = () => {
   const getSum = () => {
     let res = 0
     Object.values(activities).forEach(arr => {
-      res += arr.reduce((acc, el) => el.value + acc, 0);
+      res += arr.reduce((acc, el) => el.value + acc, 0)
     })
     return res
   }
@@ -124,26 +124,25 @@ export const ActivityPage = () => {
   const handleChange = (key, row, e) => {
     if (e.target.checked) {
       if (selectedRows[key]) {
-        const tmp = {...selectedRows};
-        tmp[key].push(row);
-        console.log('+', tmp);
-        setSelectedRows(tmp);
+        const tmp = { ...selectedRows }
+        tmp[key].push(row)
+        setSelectedRows(tmp)
       } else {
-        const tmp = {...selectedRows};
-        tmp[key] = [row];
-        console.log(tmp);
-        setSelectedRows(tmp);
+        const tmp = { ...selectedRows }
+        tmp[key] = [row]
+        setSelectedRows(tmp)
       }
     } else {
-      const tmp = {...selectedRows};
-      tmp[key] = tmp[key].filter((el => el.name !== row.name));
+      const tmp = { ...selectedRows }
+      tmp[key] = tmp[key].filter(el => el.name !== row.name)
       if (!tmp[key].length) {
-        delete tmp[key];
+        delete tmp[key]
       }
-      console.log(tmp);
-      setSelectedRows(tmp);
+      setSelectedRows(tmp)
     }
   }
+
+  console.log('Selected rows', selectedRows)
 
   return (
     <Container sx={{ py: 3 }}>
@@ -159,7 +158,7 @@ export const ActivityPage = () => {
         Експортувати в Word
       </Button>
       {showForm ? <CreateActivityForm id={id} showDeleteBtn={showDeleteBtn} act={act} /> : null}
-      <table border={1} cellSpacing={0} ref={tableRef}>
+      <table border={1} cellSpacing={0}>
         <tbody>
           <tr>
             <th></th>
@@ -180,11 +179,13 @@ export const ActivityPage = () => {
                     <>
                       <tr key={index}>
                         <td>
-                          <input type="checkbox" onChange={(e) => handleChange(el, act, e)}/>
+                          <input type='checkbox' onChange={e => handleChange(el, act, e)} />
                         </td>
                         <td>{act.name}</td>
                         <td>{act.document}</td>
-                        <td><u>{act.value}</u></td>
+                        <td>
+                          <u>{act.value}</u>
+                        </td>
                       </tr>
                     </>
                   )
@@ -198,6 +199,47 @@ export const ActivityPage = () => {
             </td>
             <td>
               <u>{getSum()}</u>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <table border={1} cellSpacing={0} ref={tableRef} style={{ display: 'none' }}>
+        <tbody>
+          <tr>
+            <th>Оперативні цілі, завдання та заходи Стратегії</th>
+            <th>Нормативний документ</th>
+            <th>Обсяги фінансування, тис.грн</th>
+          </tr>
+          {Object.keys(selectedRows).map((el, idx) => {
+            return (
+              <>
+                <tr key={idx}>
+                  <td colSpan={3} align={'center'}>
+                    <b>{el}</b>
+                  </td>
+                </tr>
+                {selectedRows[el].map((act, index) => {
+                  return (
+                    <>
+                      <tr key={index}>
+                        <td>{act.name}</td>
+                        <td>{act.document}</td>
+                        <td>
+                          <u>{act.value}</u>
+                        </td>
+                      </tr>
+                    </>
+                  )
+                })}
+              </>
+            )
+          })}
+          <tr>
+            <td colSpan={2} align={'right'}>
+              Всього
+            </td>
+            <td>
+              <u>{getSum(selectedRows)}</u>
             </td>
           </tr>
         </tbody>
